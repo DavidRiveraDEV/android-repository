@@ -1,9 +1,9 @@
 package com.drsoft.android.repository.remote.retrofit;
 
 import com.drsoft.android.repository.remote.ErrorResponseInterceptor;
+import com.drsoft.android.repository.remote.model.Consumer;
 import com.drsoft.android.repository.remote.model.ErrorResponse;
 
-import io.reactivex.functions.Consumer;
 import okhttp3.Interceptor;
 
 public class JSONPlaceholderRepository extends RetrofitRepository<JSONPlaceholderClient> {
