@@ -7,23 +7,23 @@ on:
     branches: [ staging, master ]
 
 jobs:
-#  lint:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout the code
-#        uses: actions/checkout@v2
-#
-#      - name: Run lint
-#        run: ./gradlew lintDebug
-#
-#      - name: Upload html test report
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: lint.html
-#          path: app/build/reports/lint-results-debug.html
+  #  lint:
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: Checkout the code
+  #        uses: actions/checkout@v2
+  #
+  #      - name: Run lint
+  #        run: ./gradlew lintDebug
+  #
+  #      - name: Upload html test report
+  #        uses: actions/upload-artifact@v2
+  #        with:
+  #          name: lint.html
+  #          path: app/build/reports/lint-results-debug.html
 
   unit_tests:
-#    needs: [ lint ]
+    #    needs: [ lint ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,19 +38,17 @@ jobs:
           name: unit_test_report
           path: app/build/reports/tests/testDebugUnitTest/
 
-  android_test:
-#    needs: [ unit_tests ]
+  android_tests:
+    #    needs: [ unit_tests ]
     runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v1
         with:
           java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
 
       - name: Instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -63,3 +61,20 @@ jobs:
         with:
           name: instrumentation_test_report
           path: app/build/reports/androidTests/connected/
+
+#  static_code_analysis:
+#    needs: [ unit_tests, android_tests ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: set up JDK 11
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: '11'
+#
+#      - name: SonarCloud Scan
+#        run: ./gradlew app:sonarqube -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
