@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @RunWith(JUnit4.class)
-public class RetrofitRepositoryTest {
+public class RetrofitRepositoryConstructor1Test {
 
     private static final String BASE_URL = "https://jsonplaceholder.typicode.com";
     private JSONPlaceholderRepository repository;
