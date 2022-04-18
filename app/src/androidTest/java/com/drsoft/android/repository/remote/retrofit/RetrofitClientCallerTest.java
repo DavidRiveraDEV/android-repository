@@ -32,16 +32,19 @@ public class RetrofitClientCallerTest {
     public void callSuccess() throws Exception {
         final int userId = 1;
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        new RetrofitClientCaller<>(client.getUser(userId))
-                .onSuccess(o -> {
+
+        final RetrofitRequest<Object> retrofitRequest = new RetrofitRequest.Builder<>(client.getUser(userId))
+                .setOnSuccess(o -> {
                     assertThat(o).isNotNull();
                     countDownLatch.countDown();
                 })
-                .onError(error -> {
+                .setOnError(error -> {
                     throw new RuntimeException(error.toString());
                 })
-                .errorResponseInterceptor(null)
-                .execute();
+                .setErrorResponseInterceptor(null)
+                .build();
+
+        new RetrofitClientCaller<>(retrofitRequest).execute();
 
         if (!countDownLatch.await(5, TimeUnit.SECONDS)) {
             throw new TimeoutException("Request time is over");
@@ -52,16 +55,19 @@ public class RetrofitClientCallerTest {
     public void callFail() throws Exception {
         final int userId = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        new RetrofitClientCaller<>(client.getUser(userId))
-                .onSuccess(o -> {
+
+        final RetrofitRequest<Object> retrofitRequest = new RetrofitRequest.Builder<>(client.getUser(userId))
+                .setOnSuccess(o -> {
                     throw new RuntimeException("Call success");
                 })
-                .onError(error -> {
+                .setOnError(error -> {
                     assertThat(error).isNotNull();
                     countDownLatch.countDown();
                 })
-                .errorResponseInterceptor(null)
-                .execute();
+                .setErrorResponseInterceptor(null)
+                .build();
+
+        new RetrofitClientCaller<>(retrofitRequest).execute();
 
         if (!countDownLatch.await(5, TimeUnit.SECONDS)) {
             throw new TimeoutException("Request time is over");
@@ -72,13 +78,16 @@ public class RetrofitClientCallerTest {
     public void callFailContinue() throws Exception {
         final int userId = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        new RetrofitClientCaller<>(client.getUser(userId))
-                .onSuccess(o -> {
+
+        final RetrofitRequest<Object> retrofitRequest = new RetrofitRequest.Builder<>(client.getUser(userId))
+                .setOnSuccess(o -> {
                     throw new RuntimeException();
                 })
-                .onError(error -> countDownLatch.countDown())
-                .errorResponseInterceptor(errorResponse -> true)
-                .execute();
+                .setOnError(error -> countDownLatch.countDown())
+                .setErrorResponseInterceptor(errorResponse -> true)
+                .build();
+
+        new RetrofitClientCaller<>(retrofitRequest).execute();
 
         if (!countDownLatch.await(5, TimeUnit.SECONDS)) {
             throw new TimeoutException("Request time is over");
@@ -89,18 +98,21 @@ public class RetrofitClientCallerTest {
     public void callFailNotContinue() throws Exception {
         final int userId = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        new RetrofitClientCaller<>(client.getUser(userId))
-                .onSuccess(o -> {
+
+        final RetrofitRequest<Object> retrofitRequest = new RetrofitRequest.Builder<>(client.getUser(userId))
+                .setOnSuccess(o -> {
                     throw new RuntimeException();
                 })
-                .onError(error -> {
+                .setOnError(error -> {
                     throw new RuntimeException("The execution continued");
                 })
-                .errorResponseInterceptor(errorResponse -> {
+                .setErrorResponseInterceptor(errorResponse -> {
                     countDownLatch.countDown();
                     return false;
                 })
-                .execute();
+                .build();
+
+        new RetrofitClientCaller<>(retrofitRequest).execute();
 
         if (!countDownLatch.await(5, TimeUnit.SECONDS)) {
             throw new TimeoutException("Request time is over");

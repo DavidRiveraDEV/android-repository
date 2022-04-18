@@ -2,7 +2,7 @@ package com.drsoft.android.repository.remote;
 
 import androidx.annotation.NonNull;
 
-import com.drsoft.android.repository.remote.model.ErrorResponse;
+import com.drsoft.android.repository.remote.entity.ErrorResponse;
 
 public interface ErrorResponseInterceptor {
 
