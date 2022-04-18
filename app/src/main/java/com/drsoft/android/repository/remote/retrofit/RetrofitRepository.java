@@ -3,10 +3,11 @@ package com.drsoft.android.repository.remote.retrofit;
 import androidx.annotation.NonNull;
 
 import com.drsoft.android.repository.remote.ErrorResponseInterceptor;
+import com.drsoft.android.repository.remote.model.Consumer;
 import com.drsoft.android.repository.remote.model.ErrorResponse;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
+import okhttp3.Interceptor;
 
 public class RetrofitRepository<C> {
 
@@ -14,6 +15,14 @@ public class RetrofitRepository<C> {
 
     public RetrofitRepository(C client) {
         this.client = client;
+    }
+
+    public RetrofitRepository(String baseUrl, Class<C> apiClientClass, Interceptor networkInterceptor) {
+        this.client = new RetrofitClientBuilder<>(
+                baseUrl,
+                apiClientClass,
+                networkInterceptor
+        ).build();
     }
 
     protected C getClient() {
