@@ -10,24 +10,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClientBuilder<AC> {
 
     private final AC apiClient;
-    private final Interceptor networkInterceptor;
 
     public RetrofitClientBuilder(String baseUrl, Class<AC> apiClientClass, Interceptor networkInterceptor) {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .client(getHttpClient())
+                .client(getHttpClient(networkInterceptor))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         this.apiClient = retrofit.create(apiClientClass);
-        this.networkInterceptor = networkInterceptor;
     }
 
     public AC build() {
         return apiClient;
     }
 
-    private OkHttpClient getHttpClient() {
+    private OkHttpClient getHttpClient(Interceptor networkInterceptor) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
